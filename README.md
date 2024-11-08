@@ -7,7 +7,7 @@ Example usage:
 
 ```yaml
 - name: Generate Stats
-  uses: ./
+  uses: UlyssesZh/grs-action@v0
   with:
     card: stats
     options: username=${{ github.repository_owner }}
