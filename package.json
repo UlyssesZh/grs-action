@@ -1,0 +1,20 @@
+{
+  "name": "grs-action",
+  "version": "0.1.0",
+  "homepage": "https://github.com/UlyssesZh/grs-action",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/UlyssesZh/grs-action.git"
+  },
+  "bugs": {
+    "url": "https://github.com/UlyssesZh/grs-action/issues",
+    "email": "ulysseszhan@gmail.com"
+  },
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "@actions/core": "^1.11.1",
+    "github-readme-stats": "github:anuraghazra/github-readme-stats",
+    "query-string": "^9.1.1"
+  }
+}

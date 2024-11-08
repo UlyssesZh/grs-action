@@ -1,0 +1,18 @@
+name: 'GitHub README stats generator'
+description: 'Dynamically generated stats for your GitHub README'
+inputs:
+  card:
+    description: 'Type of card: stats (default), repo, langs, or wakatime'
+    required: false
+  options:
+    description: 'Options for the card'
+    required: true
+  path:
+    description: 'Output path for SVG file (relative path; include filename with .svg)'
+    required: false
+runs:
+  using: 'node20'
+  main: 'index.js'
+branding:
+  color: 'green'
+  icon: 'bar-chart'
