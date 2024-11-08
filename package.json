@@ -13,7 +13,6 @@
   "license": "MIT",
   "type": "module",
   "dependencies": {
-    "@actions/core": "^1.11.1",
     "github-readme-stats": "github:anuraghazra/github-readme-stats",
     "query-string": "^9.1.1"
   }

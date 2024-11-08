@@ -4,15 +4,37 @@ inputs:
   card:
     description: 'Type of card: stats (default), repo, langs, or wakatime'
     required: false
+    default: 'stats'
   options:
     description: 'Options for the card'
     required: true
   path:
     description: 'Output path for SVG file (relative path; include filename with .svg)'
     required: false
+    default: 'grs/out.svg'
 runs:
-  using: 'node20'
-  main: 'index.js'
+  using: composite
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+    - name: CI
+      run: |
+        cd $GITHUB_ACTION_PATH
+        npm ci
+      env:
+        GITHUB_ACTION_PATH: ${{ github.action_path }}
+      shell: bash
+    - name: Run
+      run: |
+        node $GITHUB_ACTION_PATH/index.js
+      env:
+        GITHUB_ACTION_PATH: ${{ github.action_path }}
+        GRS_CARD: ${{ inputs.card }}
+        GRS_OPTIONS: ${{ inputs.options }}
+        GRS_PATH: ${{ inputs.path }}
+      shell: bash
 branding:
   color: 'green'
   icon: 'bar-chart'
