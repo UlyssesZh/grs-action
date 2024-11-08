@@ -30,7 +30,6 @@ jobs:
           name: stats
           path: grs
 
-
   push:
     name: Push
     permissions: write-all

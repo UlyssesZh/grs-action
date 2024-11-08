@@ -4,14 +4,11 @@ import githubReadmeStats from './api.js'
 import { mkdirSync, writeFileSync } from 'fs'
 import { dirname } from 'path'
 
-const CARDS = ['stats', 'repo', 'langs', 'wakatime', 'gist'];
-
 const grsOptions = process.env.GRS_OPTIONS;
 const card = process.env.GRS_CARD;
 const targetPath = process.env.GRS_PATH;
-
 mkdirSync(targetPath ? dirname(targetPath) : DEFAULT_DIR, { recursive: true });
-for (const cardType of CARDS) {
+for (const cardType in githubReadmeStats) {
 	if (card !== cardType) {
 		continue;
 	}
