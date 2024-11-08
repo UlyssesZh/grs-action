@@ -28,8 +28,10 @@ runs:
       shell: bash
     - name: Run
       run: |
+        cd $GITHUB_WORKSPACE
         node $GITHUB_ACTION_PATH/index.js
       env:
+        GITHUB_WORKSPACE: ${{ github.workspace }}
         GITHUB_ACTION_PATH: ${{ github.action_path }}
         GRS_CARD: ${{ inputs.card }}
         GRS_OPTIONS: ${{ inputs.options }}
