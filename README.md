@@ -20,7 +20,7 @@ Example usage:
 
 - `card`: The type of card to generate. Can be `stats` (default), `repo`, `langs`, `wakatime`, or `gist`.
 - `options`: The options to pass to the card. For example, `username=UlyssesZh`.
-- `path`: The path to save the generated card to. Defaults to `grs/${card}.svg`.
+- `path`: The path to save the generated card to. Defaults to `grs/out.svg`.
 
 Environment variables:
 
