@@ -17,6 +17,10 @@ inputs:
     description: GitHub token; normally no need to set it
     required: false
     default: ${{ github.server_url == 'https://github.com' && github.token || '' }}
+branding:
+  color: green
+  icon: bar-chart
+
 runs:
   using: composite
   steps:
@@ -27,18 +31,23 @@ runs:
         echo "lock=$(pwd)/package-lock.json" >> $GITHUB_OUTPUT
         cd $GITHUB_WORKSPACE
       shell: bash
+      # This step is needed because ${{ github.action_path }} has relative pathing (it ends with /./),
+      # which leads to an error in the setup-node step.
+
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '20'
         cache: npm
         cache-dependency-path: ${{ steps.lock.output.lock }}
+
     - name: CI
       run: |
         cd $GITHUB_ACTION_PATH
         npm ci
         cd $GITHUB_WORKSPACE
       shell: bash
+
     - name: Run
       run: node $GITHUB_ACTION_PATH/index.js
       env:
@@ -47,6 +56,3 @@ runs:
         GRS_PATH: ${{ inputs.path }}
         PAT_1: ${{ inputs.token }}
       shell: bash
-branding:
-  color: green
-  icon: bar-chart
