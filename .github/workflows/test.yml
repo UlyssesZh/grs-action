@@ -9,7 +9,10 @@ on:
 jobs:
   generate:
     name: Generate
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        platform: [windows-latest, ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.platform }}
 
     steps:
       - name: Checkout
@@ -20,14 +23,12 @@ jobs:
         with:
           card: stats
           options: username=${{ github.repository_owner }}
-          path: grs/stats.svg
-        env:
-          PAT_1: ${{ secrets.GITHUB_TOKEN }}
+          path: grs/stats-${{ matrix.platform }}.svg
 
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
-          name: stats
+          name: stats-${{ matrix.platform }}
           path: grs
 
   push:
@@ -37,12 +38,22 @@ jobs:
     needs: generate
     
     steps:
-      - name: Download
+      - name: Download (Ubuntu)
         uses: actions/download-artifact@v4
         with:
-          name: stats
+          name: stats-ubuntu-latest
           path: grs
-      
+
+      - name: Download (Windows)
+        uses: actions/download-artifact@v4
+        with:
+          name: stats-windows-latest
+
+      - name: Download (macOS)
+        uses: actions/download-artifact@v4
+        with:
+          name: stats-macos-latest
+
       - name: Push
         uses: crazy-max/ghaction-github-pages@v4
         with:

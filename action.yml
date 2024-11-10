@@ -1,42 +1,52 @@
-name: 'GitHub README stats generator'
-description: 'Dynamically generated stats for your GitHub README'
+name: GitHub README stats generator
+description: Dynamically generated stats for your GitHub README
 inputs:
   card:
-    description: 'Type of card: stats (default), repo, langs, or wakatime'
+    description: 'Type of card: one of stats (default), repo, langs, wakatime, gist.'
     required: false
-    default: 'stats'
+    default: stats
   options:
-    description: 'Options for the card'
-    required: true
-  path:
-    description: 'Output path for SVG file (relative path; include filename with .svg)'
+    description: Options for the card
     required: false
-    default: 'grs/out.svg'
+    default: username=${{ github.repository_owner }}
+  path:
+    description: Output path for SVG file (relative path; include filename with .svg)
+    required: false
+    default: grs/out.svg
+  token:
+    description: GitHub token; normally no need to set it
+    required: false
+    default: ${{ github.server_url == 'https://github.com' && github.token || '' }}
 runs:
   using: composite
   steps:
+    - name: Get package-lock.json path
+      id: lock
+      run: |
+        cd $GITHUB_ACTION_PATH
+        echo "lock=$(pwd)/package-lock.json" >> $GITHUB_OUTPUT
+        cd $GITHUB_WORKSPACE
+      shell: bash
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '20'
+        cache: npm
+        cache-dependency-path: ${{ steps.lock.output.lock }}
     - name: CI
       run: |
         cd $GITHUB_ACTION_PATH
         npm ci
-      env:
-        GITHUB_ACTION_PATH: ${{ github.action_path }}
+        cd $GITHUB_WORKSPACE
       shell: bash
     - name: Run
-      run: |
-        cd $GITHUB_WORKSPACE
-        node $GITHUB_ACTION_PATH/index.js
+      run: node $GITHUB_ACTION_PATH/index.js
       env:
-        GITHUB_WORKSPACE: ${{ github.workspace }}
-        GITHUB_ACTION_PATH: ${{ github.action_path }}
         GRS_CARD: ${{ inputs.card }}
         GRS_OPTIONS: ${{ inputs.options }}
         GRS_PATH: ${{ inputs.path }}
+        PAT_1: ${{ inputs.token }}
       shell: bash
 branding:
-  color: 'green'
-  icon: 'bar-chart'
+  color: green
+  icon: bar-chart
