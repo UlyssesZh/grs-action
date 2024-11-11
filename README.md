@@ -14,6 +14,9 @@ Example usage:
     path: grs/stats.svg
 ```
 
+For an example of the generated card, see
+[here](https://github.com/UlyssesZh/grs-action/blob/gh-action-output/stats-ubuntu-latest.svg).
+
 For a more complicated example, see
 [my own profile](https://github.com/ulysseszh/ulysseszh/blob/master/.github/workflows/grs.yml).
 
