@@ -29,24 +29,37 @@ runs:
       run: |
         cd $GITHUB_ACTION_PATH
         echo "lock=$(pwd)/package-lock.json" >> $GITHUB_OUTPUT
+        echo "modules=$(pwd)/node_modules" >> $GITHUB_OUTPUT
         cd $GITHUB_WORKSPACE
       shell: bash
-      # This step is needed because ${{ github.action_path }} has relative pathing (it ends with /./),
-      # which leads to an error in the setup-node step.
+      # This step is needed because ${{ github.action_path }} has relative pathing (it ends with /./).
 
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '20'
-        cache: npm
-        cache-dependency-path: ${{ steps.lock.output.lock }}
+
+    - name: Restore cache
+      uses: actions/cache/restore@v4
+      id: cache-restore
+      with:
+        path: ${{ steps.lock.outputs.modules }}
+        key: ${{ runner.os }}-grs-modules-${{ hashFiles(steps.lock.outputs.lock) }}
 
     - name: CI
+      if: steps.cache-restore.outputs.cache-hit != 'true'
       run: |
         cd $GITHUB_ACTION_PATH
         npm ci
         cd $GITHUB_WORKSPACE
       shell: bash
+
+    - name: Save cache
+      if: steps.cache-restore.outputs.cache-hit != 'true'
+      uses: actions/cache/save@v4
+      with:
+        path: ${{ steps.lock.outputs.modules }}
+        key: ${{ runner.os }}-grs-modules-${{ hashFiles(steps.lock.outputs.lock) }}
 
     - name: Run
       run: node $GITHUB_ACTION_PATH/index.js
