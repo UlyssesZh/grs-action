@@ -28,8 +28,14 @@ runs:
       id: lock
       run: |
         cd $GITHUB_ACTION_PATH
-        echo "lock=$(pwd)/package-lock.json" >> $GITHUB_OUTPUT
-        echo "modules=$(pwd)/node_modules" >> $GITHUB_OUTPUT
+        lock=$(pwd)/package-lock.json
+        modules=$(pwd)/node_modules
+        if command -v cygpath &> /dev/null; then
+          lock=$(cygpath -w $lock)
+          modules=$(cygpath -w $modules)
+        fi
+        echo "lock=$lock" >> $GITHUB_OUTPUT
+        echo "modules=$modules" >> $GITHUB_OUTPUT
         cd $GITHUB_WORKSPACE
       shell: bash
       # This step is needed because ${{ github.action_path }} has relative pathing (it ends with /./).
