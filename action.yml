@@ -24,33 +24,37 @@ branding:
 runs:
   using: composite
   steps:
-    - name: Get package-lock.json path
-      id: lock
-      run: |
-        cd $GITHUB_ACTION_PATH
-        lock=$(pwd)/package-lock.json
-        modules=$(pwd)/node_modules
-        if command -v cygpath &> /dev/null; then
-          lock=$(cygpath -w $lock)
-          modules=$(cygpath -w $modules)
-        fi
-        echo "lock=$lock" >> $GITHUB_OUTPUT
-        echo "modules=$modules" >> $GITHUB_OUTPUT
-        cd $GITHUB_WORKSPACE
-      shell: bash
-      # This step is needed because ${{ github.action_path }} has relative pathing (it ends with /./).
-
     - name: Setup Node.js
       uses: actions/setup-node@v4
       with:
         node-version: '20'
+
+    - name: Get cache key and path
+      id: lock
+      run: |
+        cd $GITHUB_ACTION_PATH
+        node <<'JAVASCRIPT'
+          const fs = require('fs');
+          const os = require('os');
+          const sha256 = require('crypto').createHash('sha256');
+          const hash = sha256.update(fs.readFileSync('package-lock.json')).digest('hex');
+          fs.appendFileSync(process.env.GITHUB_OUTPUT, `key=${os.platform()}-${os.arch()}-grs-modules-${hash}\n`);
+        JAVASCRIPT
+        modules=$(pwd)/node_modules
+        command -v cygpath &> /dev/null && modules=$(cygpath -w $modules)
+        echo "modules=$modules" >> $GITHUB_OUTPUT
+        cat $GITHUB_OUTPUT
+        cd $GITHUB_WORKSPACE
+      shell: bash
+      # This step is needed because ${{ github.action_path }} has relative pathing (it ends with /./).
+      # On macOS and Ubuntu runner, sha256sum command isn't available, so I use Node.js to calculate the hash.
 
     - name: Restore cache
       uses: actions/cache/restore@v4
       id: cache-restore
       with:
         path: ${{ steps.lock.outputs.modules }}
-        key: ${{ runner.os }}-grs-modules-${{ hashFiles(steps.lock.outputs.lock) }}
+        key: ${{ steps.lock.outputs.key }}
 
     - name: CI
       if: steps.cache-restore.outputs.cache-hit != 'true'
@@ -65,7 +69,7 @@ runs:
       uses: actions/cache/save@v4
       with:
         path: ${{ steps.lock.outputs.modules }}
-        key: ${{ runner.os }}-grs-modules-${{ hashFiles(steps.lock.outputs.lock) }}
+        key: ${{ steps.lock.outputs.key }}
 
     - name: Run
       run: node $GITHUB_ACTION_PATH/index.js
