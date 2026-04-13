@@ -22,7 +22,7 @@ For an example of the generated card, see
 [here](https://github.com/UlyssesZh/grs-action/blob/gh-action-output/stats-ubuntu-latest.svg).
 
 For a more complicated example, see
-[my own profile](https://github.com/ulysseszh/ulysseszh/blob/master/.github/workflows/grs.yml).
+[my own profile](https://github.com/UlyssesZh/UlyssesZh/blob/b483bc316738fb5ec3e44849599dad70ab290a18/.github/workflows/grs.yml).
 
 ## Inputs
 

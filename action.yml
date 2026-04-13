@@ -25,9 +25,10 @@ runs:
   using: composite
   steps:
     - name: Setup Node.js
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v6
       with:
-        node-version: '20'
+        node-version: '24'
+        package-manager-cache: false
 
     - name: Deprecation warning
       run: |
@@ -57,7 +58,7 @@ runs:
       # On macOS and Ubuntu runner, sha256sum command isn't available, so I use Node.js to calculate the hash.
 
     - name: Restore cache
-      uses: actions/cache/restore@v4
+      uses: actions/cache/restore@v5
       id: cache-restore
       with:
         path: ${{ steps.lock.outputs.modules }}
@@ -73,7 +74,7 @@ runs:
 
     - name: Save cache
       if: steps.cache-restore.outputs.cache-hit != 'true'
-      uses: actions/cache/save@v4
+      uses: actions/cache/save@v5
       with:
         path: ${{ steps.lock.outputs.modules }}
         key: ${{ steps.lock.outputs.key }}
