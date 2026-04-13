@@ -29,6 +29,13 @@ runs:
       with:
         node-version: '20'
 
+    - name: Deprecation warning
+      run: |
+        echo -n "::warning title=Deprecated::This action has been deprecated "
+        echo -n "in favor of stats-organization/github-readme-stats-action "
+        echo "(https://github.com/stats-organization/github-readme-stats-action)."
+      shell: bash
+
     - name: Get cache key and path
       id: lock
       run: |

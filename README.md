@@ -1,5 +1,9 @@
 # grs-action
 
+> [!WARNING]
+> This action has been deprecated in favor of
+> [stats-organization/github-readme-stats-action](https://github.com/stats-organization/github-readme-stats-action).
+
 A GitHub Action to generate
 [GitHub Readme Stats](https://github.com/anuraghazra/github-readme-stats).
 
